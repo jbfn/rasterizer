@@ -18,5 +18,5 @@ project(
 
 # You should usually split this into folders, but this is a simple example
 
-add_executable(render src/main.cpp src/models.cpp src/image.cpp src/utils.cpp
+add_executable(render src/main.cpp src/models.h src/image.cpp src/utils.cpp
                       src/random.cpp)

@@ -1,23 +1,20 @@
 #include "models.h"
 
-// Return the dot product of two vectors on the XY plane
+// Compute the dot product of two 3D vectors.
 float Dot(const float a, const float b);
 
-// Rotate a vector 90 degress clockwise on the XY plane
-Vector3 Rotate90XY(const Vector3 &vector);
+// Convert a number to a string and front pad it.
+std::string ToPaddedString(uint16_t number, uint8_t length, char pad_char);
 
-// Return true if a point is on the right side of a directed line a -> b on the
-// XY plane
-bool PointOnRightSide(const Vector3 &point, const Vector3 &a, const Vector3 &b);
-
-// Return a bool indicating if a point is within the bounds of the triangle
-// created by 3 other points on the XY plane
-bool PointInsideTriangle(const Vector3 &point, const Vector3 &a,
-                         const Vector3 &b, const Vector3 &c);
-
-// Convert an number to a string and pad it with leading 0s
-std::string pad0sFront(uint16_t number, uint8_t length);
-
-// Get the bounds of the triangle formed by 3 points
+// Get the maximum and minimum components from a set of 3D vectors.
 std::pair<Vector3, Vector3> Bounds(const Vector3 &a, const Vector3 &b,
                                    const Vector3 &c);
+
+// Compute the cross product of AB and AP.
+int Cross(int ax, int ay, int bx, int by, int px, int py);
+
+// Determine whether a point P lies inside a triangle ABC. Checks if the signs
+// of each triangle edge crossed with the vector from that edge's head to P
+// are the same.
+bool PointInsideTriangle(int px, int py, int ax, int ay, int bx, int by, int cx,
+                         int cy);

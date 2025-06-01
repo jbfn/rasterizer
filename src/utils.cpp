@@ -5,42 +5,25 @@
 #include "models.h"
 #include "utils.h"
 
-float Dot(const Vector3 &a, const Vector3 &b) { return a.x * b.x + a.y * b.y; }
-
-Vector3 Rotate90XY(const Vector3 &vector) {
-  return Vector3(vector.y, -vector.x, vector.z);
+float Dot(const Vector3 &a, const Vector3 &b) {
+  return a[0] * b[0] + a[1] * b[1];
 }
 
-bool PointOnRightSide(const Vector3 &point, const Vector3 &a,
-                      const Vector3 &b) {
-  Vector3 ap = point - a;
-  Vector3 abPerpendicular = Rotate90XY(b - a);
-  return Dot(ap, abPerpendicular) >= 0;
-}
-
-bool PointInsideTriangle(const Vector3 &point, const Vector3 &a,
-                         const Vector3 &b, const Vector3 &c) {
-  bool ab = PointOnRightSide(point, a, b);
-  bool bc = PointOnRightSide(point, b, c);
-  bool ca = PointOnRightSide(point, c, a);
-  return ab == bc && bc == ca;
-}
-
-std::string pad0sFront(const uint16_t number, const uint8_t length) {
+std::string ToPaddedString(const uint16_t number, const uint8_t length,
+                           char pad_char) {
   std::ostringstream oss;
-  oss << std::setw(length) << std::setfill('0') << number;
+  oss << std::setw(length) << std::setfill(pad_char) << number;
   return oss.str();
 }
 
-std::pair<Vector3, Vector3> Bounds(const Vector3 &a, const Vector3 &b,
-                                   const Vector3 &c) {
-  Vector3 min = Vector3();
-  Vector3 max = Vector3();
-  min.x = std::min(std::min(a.x, b.x), c.x);
-  min.y = std::min(std::min(a.y, b.y), c.y);
-  min.z = std::min(std::min(a.z, b.z), c.z);
-  max.x = std::max(std::max(a.x, b.x), c.x);
-  max.y = std::max(std::max(a.y, b.y), c.y);
-  max.z = std::max(std::max(a.z, b.z), c.z);
-  return {min, max};
+int Cross(int ax, int ay, int bx, int by, int px, int py) {
+  return (px - ax) * (by - ay) - (py - ay) * (bx - ax);
+}
+
+bool PointInsideTriangle(int px, int py, int ax, int ay, int bx, int by, int cx,
+                         int cy) {
+  int w0 = Cross(ax, ay, bx, by, px, py);
+  int w1 = Cross(bx, by, cx, cy, px, py);
+  int w2 = Cross(cx, cy, ax, ay, px, py);
+  return (w0 >= 0 && w1 >= 0 && w2 >= 0) || (w0 <= 0 && w1 <= 0 && w2 <= 0);
 }

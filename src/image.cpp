@@ -46,9 +46,9 @@ void WriteImageToFile(const Image &image, const std::string &name) {
   for (int y = height - 1; y >= 0; --y) { // BMP writes bottom to top
     for (uint32_t x = 0; x < width; ++x) {
       Vector3 pixel = image(x, y);
-      uint8_t r = static_cast<uint8_t>(pixel.r() * 255);
-      uint8_t g = static_cast<uint8_t>(pixel.g() * 255);
-      uint8_t b = static_cast<uint8_t>(pixel.b() * 255);
+      uint8_t r = static_cast<uint8_t>(pixel[0] * 255);
+      uint8_t g = static_cast<uint8_t>(pixel[1] * 255);
+      uint8_t b = static_cast<uint8_t>(pixel[2] * 255);
       uint8_t padding = 0;
       out.put(b); // BMP uses BGR order
       out.put(g);

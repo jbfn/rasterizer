@@ -3,55 +3,49 @@
 #include <iostream>
 
 struct Vector3 {
-  float x, y, z;
+  float data[3];
 
   // Constructors
-  Vector3() : x(0), y(0), z(0) {}
-  Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+  Vector3() : data{0, 0, 0} {}
+  Vector3(float x, float y, float z) : data{x, y, z} {}
 
-  // Helpers
-  float r() const { return x; }
-  void set_r(float value) { x = value; }
+  inline float &x() { return data[0]; }
+  inline float &y() { return data[1]; }
+  inline float &z() { return data[2]; }
 
-  float g() const { return y; }
-  void set_g(float value) { y = value; }
-
-  float b() const { return z; }
-  void set_b(float value) { z = value; }
-
-  bool is_inside(const Vector3 &a, const Vector3 &b, const Vector3 &c) const;
+  inline float x() const { return data[0]; }
+  inline float y() const { return data[1]; }
+  inline float z() const { return data[2]; }
 
   // Operators
-  Vector3 operator+(const Vector3 &vector2) const {
-    return Vector3(vector2.x + this->x, vector2.y + this->y,
-                   vector2.z + this->z);
-  }
-  void operator+=(const Vector3 &vector2) {
-    this->x = this->x + vector2.x;
-    this->y = this->y + vector2.y;
-    this->z = this->z + vector2.z;
-  }
+  inline float &operator[](size_t i) { return data[i]; }
+  inline const float &operator[](size_t i) const { return data[i]; }
 
-  Vector3 operator-(const Vector3 &vector2) const {
-    return Vector3(vector2.x - this->x, vector2.y - this->y,
-                   vector2.z - this->z);
+  inline Vector3 operator+(const Vector3 &rhs) const {
+    return Vector3(data[0] + rhs[0], data[1] + rhs[1], data[2] + rhs[2]);
   }
-
-  void operator-=(const Vector3 &vector2) {
-    this->x = this->x - vector2.x;
-    this->y = this->y - vector2.y;
-    this->z = this->z - vector2.z;
+  inline void operator+=(const Vector3 &rhs) {
+    data[0] += rhs[0];
+    data[1] += rhs[1];
+    data[2] += rhs[2];
   }
-
-  Vector3 operator*(const float &multiplier) const {
-    return Vector3(this->x * multiplier, this->y * multiplier,
-                   this->z * multiplier);
+  inline Vector3 operator-(const Vector3 &rhs) const {
+    return Vector3(data[0] - rhs[0], data[1] - rhs[1], data[2] - rhs[2]);
   }
-
-  Vector3 operator/(const float &divisor) const {
-    return Vector3(this->x / divisor, this->y / divisor, this->z / divisor);
+  inline void operator-=(const Vector3 &rhs) {
+    data[0] -= rhs[0];
+    data[1] -= rhs[1];
+    data[2] -= rhs[2];
+  }
+  inline Vector3 operator*(const float &rhs) const {
+    return Vector3(data[0] * rhs, data[1] * rhs, data[2] * rhs);
+  }
+  inline Vector3 operator/(const float &rhs) const {
+    return Vector3(data[0] / rhs, data[1] / rhs, data[2] / rhs);
   }
 };
 
 // Vector3 operator<<
-std::ostream &operator<<(std::ostream &os, const Vector3 &v);
+inline std::ostream &operator<<(std::ostream &os, const Vector3 &v) {
+  return os << "{" << v[0] << ", " << v[1] << ", " << v[2] << "}";
+}
