@@ -117,14 +117,7 @@ static void CreateTriangleAnimation() {
   using namespace std::chrono;
 
   for (int frame = 0; frame < FRAMES; frame++) {
-    auto start = steady_clock::now();
-
     Render(points, colours, image);
-
-    auto end = steady_clock::now();
-    auto duration = duration_cast<milliseconds>(end - start).count();
-    std::cout << "Generated frame " << frame << " in " << duration << "ms"
-              << std::endl;
 
     WriteImageToFile(image, ToPaddedString(frame, 4, '0'));
     image.reset();
