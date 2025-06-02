@@ -1,4 +1,3 @@
-#include <chrono>
 #include <iostream>
 #include <vector>
 
@@ -62,6 +61,7 @@ void Render(std::vector<Vector3> &points, std::vector<Vector3> &colours,
     Vector3 a = points[i];
     Vector3 b = points[i + 1];
     Vector3 c = points[i + 2];
+    // std::cout << "triangle " << a << b << c << std::endl;
 
     int ax = static_cast<int>(a[0]);
     int ay = static_cast<int>(a[1]);
@@ -70,18 +70,62 @@ void Render(std::vector<Vector3> &points, std::vector<Vector3> &colours,
     int cx = static_cast<int>(c[0]);
     int cy = static_cast<int>(c[1]);
 
-    int minX = std::min(ax, bx);
-    int maxX = std::max(ax, bx);
-    int minY = std::min(ay, by);
-    int maxY = std::max(ay, by);
+    // bounding box
+    int minX = std::min(std::min(ax, bx), cx);
+    int maxX = std::max(std::max(ax, bx), cx);
+    int minY = std::min(std::min(ay, by), cy);
+    int maxY = std::max(std::max(ay, by), cy);
 
-    // Colour triangle pixels
+    // change in edge function per change in x or y pixel
+    int deltaXABAP = (by - ay);
+    int deltaYABAP = (ax - bx);
+    int deltaXBCBP = (cy - by);
+    int deltaYBCBP = (bx - cx);
+    int deltaXCACP = (ay - cy);
+    int deltaYCACP = (cx - ax);
+
+    // signed areas of top-left pixel (-1x) crossed with triangle edges
+    int areaABAP = EdgeFunction(ax, ay, bx, by, minX - 1, minY);
+    int areaBCBP = EdgeFunction(bx, by, cx, cy, minX - 1, minY);
+    int areaCACP = EdgeFunction(cx, cy, ax, ay, minX - 1, minY);
+
+    auto sameSign = [](int i1, int i2, int i3) {
+      bool sign =
+          (i1 >= 0 && i2 >= 0 && i3 >= 0) || (i1 <= 0 && i2 <= 0 && i3 <= 0);
+      // std::cout << "sign " << sign << std::endl;
+      return sign;
+    };
+
+    // snake down through pixels in image
+    bool flipX = minY % 2 == 1;
     for (int y = minY; y < maxY; y++) {
-      for (int x = minX; x < maxX; x++) {
-        if (PointInsideTriangle(x, y, ax, ay, bx, by, cx, cy)) {
-          image(x, y) = colours[i / 3];
+      if (flipX ^ (y % 2 == 0)) {
+        for (int x = minX; x < maxX; x++) {
+          areaABAP += deltaXABAP;
+          areaBCBP += deltaXBCBP;
+          areaCACP += deltaXCACP;
+          // std::cout << "edges " << x << " " << y << " " << areaABAP << " "
+          //          << areaBCBP << " " << areaCACP << std::endl;
+          if (sameSign(areaABAP, areaBCBP, areaCACP)) {
+            // std::cout << "filling " << x << " " << y << std::endl;
+            image(x, y) = colours[i / 3];
+          }
+        }
+      } else {
+        for (int x = maxX - 1; x >= minX; x--) {
+          if (sameSign(areaABAP, areaBCBP, areaCACP)) {
+            image(x, y) = colours[i / 3];
+          }
+          areaABAP -= deltaXABAP;
+          areaBCBP -= deltaXBCBP;
+          areaCACP -= deltaXCACP;
+          // std::cout << "edges " << x << " " << y << " " << areaABAP << " "
+          //           << areaBCBP << " " << areaCACP << std::endl;
         }
       }
+      areaABAP += deltaYABAP;
+      areaBCBP += deltaYBCBP;
+      areaCACP += deltaYCACP;
     }
   }
 }
