@@ -3,9 +3,9 @@
 #include "random.h"
 #include "structs.h"
 
-std::array<unsigned int, 10> getRandomSeedData() {
+std::array<int, 10> getRandomSeedData() {
   std::random_device source;
-  std::array<unsigned int, 10> data;
+  std::array<int, 10> data;
   for (auto &elem : data) {
     elem = source();
   }

@@ -4,26 +4,27 @@
 
 class Screen {
 public:
-  Screen(uint16_t width, uint16_t height) : width(width), height(height) {
+  Screen(int width, int height) : width(width), height(height) {
     data.resize(width * height);
   }
 
-  Vector3 &operator()(uint16_t x, uint16_t y) {
+  Vector3 &operator()(int x, int y) {
     return data[y * width + x]; // row-major layout
   }
-
-  const Vector3 &operator()(uint16_t x, uint16_t y) const {
-    return data[y * width + x];
+  Vector3 &operator()(int i) {
+    return data[i]; // row-major layout
   }
 
-  uint16_t getWidth() const { return width; }
-  uint16_t getHeight() const { return height; }
-  uint16_t length() const { return width + height; }
+  const Vector3 &operator()(int x, int y) const { return data[y * width + x]; }
+
+  int getWidth() const { return width; }
+  int getHeight() const { return height; }
+  int length() const { return width + height; }
 
   void reset() { std::fill(data.begin(), data.end(), Vector3()); }
 
 private:
-  uint16_t width, height;
+  int width, height;
   std::vector<Vector3> data;
 };
 

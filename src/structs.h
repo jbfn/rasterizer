@@ -47,5 +47,6 @@ struct Vector3 {
 
 // Vector3 operator<<
 inline std::ostream &operator<<(std::ostream &os, const Vector3 &v) {
-  return os << "{" << v[0] << ", " << v[1] << ", " << v[2] << "}";
+  return os << "{" << (int)v[0] << ", " << (int)v[1] << ", " << (int)v[2]
+            << "}";
 }

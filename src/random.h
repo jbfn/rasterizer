@@ -4,7 +4,7 @@
 #include "structs.h"
 
 // Generate random seed data for an RNG
-std::array<unsigned int, 10> getRandomSeedData();
+std::array<int, 10> getRandomSeedData();
 
 // Generate a random number between 0 and 1
 double randomNumber();
