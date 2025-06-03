@@ -1,19 +1,8 @@
-#include <iomanip>
-#include <sstream>
-#include <string>
-
-#include "models.h"
-#include "utils.h"
+#include "math.h"
+#include "structs.h"
 
 float Dot(const Vector3 &a, const Vector3 &b) {
   return a[0] * b[0] + a[1] * b[1];
-}
-
-std::string ToPaddedString(const uint16_t number, const uint8_t length,
-                           char pad_char) {
-  std::ostringstream oss;
-  oss << std::setw(length) << std::setfill(pad_char) << number;
-  return oss.str();
 }
 
 int EdgeFunction(int ax, int ay, int bx, int by, int px, int py) {

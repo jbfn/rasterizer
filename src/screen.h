@@ -1,10 +1,10 @@
 #pragma once
 
-#include "models.h"
+#include "structs.h"
 
-class Image {
+class Screen {
 public:
-  Image(uint16_t width, uint16_t height) : width(width), height(height) {
+  Screen(uint16_t width, uint16_t height) : width(width), height(height) {
     data.resize(width * height);
   }
 
@@ -27,4 +27,4 @@ private:
   std::vector<Vector3> data;
 };
 
-void WriteImageToFile(const Image &image, const std::string &name);
+void WriteScreenToFile(const Screen &screen, const std::string &name);

@@ -1,7 +1,7 @@
 #include <random>
 
-#include "models.h"
 #include "random.h"
+#include "structs.h"
 
 std::array<unsigned int, 10> getRandomSeedData() {
   std::random_device source;

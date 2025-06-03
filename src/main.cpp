@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
 
-#include "image.h"
-#include "models.h"
+#include "math.h"
 #include "random.h"
+#include "screen.h"
+#include "structs.h"
 #include "utils.h"
 
 const int IMAGE_WIDTH = 800;
@@ -53,10 +54,10 @@ CreateRunTemplate() {
   return {points, velocities, colours};
 }
 
-// Populate an image with pixel colors from a list of triangle vertices and
+// Populate a screen with pixel colors from a list of triangle vertices and
 // colors per triangle.
 void Render(std::vector<Vector3> &points, std::vector<Vector3> &colours,
-            Image &image) {
+            Screen &screen) {
   for (int i = 0; i < points.size(); i += 3) {
     Vector3 a = points[i];
     Vector3 b = points[i + 1];
@@ -95,7 +96,7 @@ void Render(std::vector<Vector3> &points, std::vector<Vector3> &colours,
       for (int x = minX; x < maxX; x++) {
         if ((areaAB >= 0 && areaBC >= 0 && areaCA >= 0) ||
             (areaAB <= 0 && areaBC <= 0 && areaCA <= 0)) {
-          image(x, y) = colours[i / 3];
+          screen(x, y) = colours[i / 3];
         }
         areaAB += dx_AB;
         areaBC += dx_BC;
@@ -109,7 +110,7 @@ void Render(std::vector<Vector3> &points, std::vector<Vector3> &colours,
 }
 
 // Move triangle vertices one frame forward according to their velocity. If a
-// vertex will go out of the image boundaries, its velocity is reversed.
+// vertex will go out of the screen boundaries, its velocity is reversed.
 void UpdatePointPositions(std::vector<Vector3> &points,
                           std::vector<Vector3> &vels) {
   auto bounce = [](float &pos, float &vel, float max) {
@@ -131,26 +132,39 @@ void UpdatePointPositions(std::vector<Vector3> &points,
 
 // Generate a series of BMP images that depict triangles bouncing around the
 // screen.
-static void CreateTriangleAnimation() {
-  Image image(IMAGE_WIDTH, IMAGE_HEIGHT);
-  image.reset();
+static long CreateTriangleAnimation() {
+  Screen screen(IMAGE_WIDTH, IMAGE_HEIGHT);
+  screen.reset();
   auto [points, vels, colours] = CreateRunTemplate();
 
   using namespace std::chrono;
 
-  for (int frame = 0; frame < FRAMES; frame++) {
-    Render(points, colours, image);
+  auto start = steady_clock::now();
 
-    WriteImageToFile(image, ToPaddedString(frame, 4, '0'));
-    image.reset();
+  for (int frame = 0; frame < FRAMES; frame++) {
+    if (frame % 50 == 0) {
+      std::cout << "Created " << frame << " frames" << std::endl;
+    }
+    Render(points, colours, screen);
+
+    std::string name = ToPaddedString(frame, 4, '0');
+    WriteScreenToFile(screen, name);
+    screen.reset();
 
     UpdatePointPositions(points, vels);
   }
+
+  auto end = steady_clock::now();
+  auto duration = duration_cast<milliseconds>(end - start).count();
+  return (long)duration;
 }
 
 int main(void) {
   std::cout << "Creating triangle frames" << std::endl;
-  CreateTriangleAnimation();
+  long ms = CreateTriangleAnimation();
+
+  long pps = IMAGE_WIDTH * IMAGE_HEIGHT * FRAMES / ms * 1000;
+  std::cout << "Pixels per second: " << pps << std::endl;
 
   return EXIT_SUCCESS;
 }

@@ -2,17 +2,17 @@
 #include <iostream>
 #include <string>
 
-#include "image.h"
-#include "models.h"
+#include "screen.h"
+#include "structs.h"
 
-void WriteImageToFile(const Image &image, const std::string &name) {
+void WriteScreenToFile(const Screen &screen, const std::string &name) {
   const std::string filePath = name + ".bmp";
   std::ofstream out(filePath, std::ios::binary);
   if (!out)
     return;
 
-  uint32_t width = image.getWidth();
-  uint32_t height = image.getHeight();
+  uint32_t width = screen.getWidth();
+  uint32_t height = screen.getHeight();
 
   uint32_t fileHeaderSize = 14;
   uint32_t infoHeaderSize = 40;
@@ -45,7 +45,7 @@ void WriteImageToFile(const Image &image, const std::string &name) {
   // ----- DATA -----
   for (int y = height - 1; y >= 0; --y) { // BMP writes bottom to top
     for (uint32_t x = 0; x < width; ++x) {
-      Vector3 pixel = image(x, y);
+      Vector3 pixel = screen(x, y);
       uint8_t r = static_cast<uint8_t>(pixel[0] * 255);
       uint8_t g = static_cast<uint8_t>(pixel[1] * 255);
       uint8_t b = static_cast<uint8_t>(pixel[2] * 255);

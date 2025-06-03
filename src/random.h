@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <random>
 
-#include "models.h"
+#include "structs.h"
 
 // Generate random seed data for an RNG
 std::array<unsigned int, 10> getRandomSeedData();

@@ -1,6 +1,10 @@
 # Build
 build/
 
+#Profiling
+*.trace
+*.storedata
+
 # Dependency management
 conan.txt
 

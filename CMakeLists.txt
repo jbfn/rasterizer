@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(
   Renderer
   VERSION 1.0
-  DESCRIPTION "First attempt at rendering"
+  DESCRIPTION "Simple software rasterizer"
   LANGUAGES CXX)
 
 # If you set any CMAKE_ variables, that can go here. (But usually don't do this,
@@ -18,5 +18,5 @@ project(
 
 # You should usually split this into folders, but this is a simple example
 
-add_executable(render src/main.cpp src/models.h src/image.cpp src/utils.cpp
-                      src/random.cpp)
+add_executable(render src/main.cpp src/structs.h src/screen.cpp src/math.cpp
+                      src/utils.h src/random.cpp)
